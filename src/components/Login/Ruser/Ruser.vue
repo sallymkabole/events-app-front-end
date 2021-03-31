@@ -166,7 +166,7 @@ html {
 }
 .book-btn {
   background: #f2b920;
-  border-radius: 40px;
+  border-radius: 8px;
   color: #000;
   text-decoration: none;
   font-size: 18px;
