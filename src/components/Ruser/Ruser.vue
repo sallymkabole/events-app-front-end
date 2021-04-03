@@ -12,7 +12,7 @@
         <img
           class="hero-image"
           alt="Vue logo"
-          src="../../../assets/banner.jpg"
+          src="/../../assets/banner.jpg"
         />
         <div class="search-row"><h1>The right Events Aggregator for you</h1>
         <h3 class="mt-4">from genres like comedy, art, food to festivals; you</h3>
@@ -38,7 +38,7 @@
           <div class="card crd" style="width: 20rem">
             <img
               class="card-img-top img-card"
-              src="../../../assets/xpo.jpeg"
+              src="../../assets/xpo.jpeg"
               alt="Card image cap"
             />
             <div class="card-body">
@@ -64,7 +64,7 @@
           <div class="card crd" style="width: 20rem">
             <img
               class="card-img-top img-card"
-              src="../../../assets/xpo.jpeg"
+              src="../../assets/xpo.jpeg"
               alt="Card image cap"
             />
             <div class="card-body">
@@ -90,7 +90,7 @@
           <div class="card crd" style="width: 20rem">
             <img
               class="card-img-top img-card"
-              src="../../../assets/xpo.jpeg"
+              src="../../assets/xpo.jpeg"
               alt="Card image cap"
             />
             <div class="card-body">

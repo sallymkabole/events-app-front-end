@@ -2,8 +2,13 @@
   <div>
     <div class="sidenav text-left">
       <h2 class="ml-2 text-white text-center">Event Finder</h2>
-      <div class="links">
-      </div>
+      <div class="sidenav">
+            <h2 class="ml-2 text-white text-center">Event Finder</h2>
+      <ul>
+        <li><a href="/admin">Admin</a></li>
+         <li><a href="/logout">logout</a></li>
+      </ul>
+    </div>
     </div>
     <div class="main">
       <h1 class="text-left">Dashboard</h1>

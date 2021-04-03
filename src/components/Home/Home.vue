@@ -1,49 +1,300 @@
 <template>
   <div>
-    <div class="sidenav">
+    <div class="sidenav text-left">
+      <h2 class="ml-2 text-white text-center">Event Finder</h2>
+      <div class="sidenav">
             <h2 class="ml-2 text-white text-center">Event Finder</h2>
-      <a href="#home">Home</a>
+      <a href="/admin">Admin</a>
+    </div>
     </div>
     <div class="main">
-      <div class="card card-outer mx-auto">
-        <div class="card-header"><p class="card-title float-left">Event</p>
-          <button class="btn-outline-primary btn-rounded float-right"> Add Event</button>
-        </div>
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-3">
-              <img
-                class="float-left img"
-                alt="Vue logo"
-                src="../../assets/img.jpeg"
-              />
+      <h1 class="text-left">Dashboard</h1>
+      <hr />
+      <alert :message=message v-if="showMessage"></alert>
+      <div class="centered">
+        <div class="row">
+          <div class="col-12">
+            <div class="div-outline">
+              <div class="row center">
+                <h3 class="">Events</h3>
+              </div>
             </div>
-            <div class="col-3 ">
-              <p class="text-left card-title">Art in The Open.</p>
-              <p class="text-left card-subtitle">
-                12th March 2021
-              </p>
-            </div>
-            <div class="col-3">
-             <p class="text-left title">
-                10pm-12am
-              </p>
-              <p class="text-left card-subtitle">
-                K24 Place
-              </p>
-            </div>
-            <div class="col-3  ">
-              <div class="btn-group mt-2" role="group">
-                  <button type="button" class="btn btn-warning btn-sm">Edit</button>
-                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                </div>
-            </div>
+            <table class="card-outer table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Location</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(event, index) in events" :key="index">
+                  <td>{{ event.name }}</td>
+                  <td>{{ event.date }}</td>
+                  <td>
+                    {{ event.location }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
+    <b-modal
+      ref="addEventModal"
+      id="event-modal"
+      title="Add a new event"
+      hide-footer
+    >
+      <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+        <b-form-group
+          id="form-name-group"
+          label="Name:"
+          label-for="form-name-input"
+        >
+          <b-form-input
+            id="form-name-input"
+            type="text"
+            v-model="addEventForm.name"
+            required
+            placeholder="Enter name"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-form-group
+          id="form-location-group"
+          label="Location:"
+          label-for="form-location-input"
+        >
+          <b-form-input
+            id="form-location-input"
+            type="text"
+            v-model="addEventForm.location"
+            required
+            placeholder="Enter location"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-form-group
+          id="form-date-group"
+          label="Date:"
+          label-for="form-date-input"
+        >
+          <b-form-input
+            id="form-date-input"
+            type="text"
+            v-model="addEventForm.date"
+            required
+            placeholder="Enter date"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-button type="submit" class="mr-2" variant="primary">Submit</b-button>
+        <b-button type="reset" variant="danger">Reset</b-button>
+      </b-form>
+    </b-modal>
+    <b-modal
+      ref="editEventModal"
+      id="event-update-modal"
+      title="Update"
+      hide-footer
+    >
+      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+        <b-form-group
+          id="form-title-group"
+          label="Name:"
+          label-for="form-title-input"
+        >
+          <b-form-input
+            id="form-title-input"
+            type="text"
+            v-model="editForm.name"
+            required
+            placeholder="Enter name"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-form-group
+          id="form-location-group"
+          label="Location:"
+          label-for="form-location-input"
+        >
+          <b-form-input
+            id="form-location-input"
+            type="text"
+            v-model="editForm.location"
+            required
+            placeholder="Enter location"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-form-group
+          id="form-date-group"
+          label="Date:"
+          label-for="form-date-input"
+        >
+          <b-form-input
+            id="form-date-input"
+            type="text"
+            v-model="editForm.date"
+            required
+            placeholder="Enter date"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-button type="submit" class="mr-2" variant="primary">Submit</b-button>
+        <b-button type="reset" variant="danger">Reset</b-button>
+      </b-form>
+    </b-modal>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+import Alert from '../Alert.vue';
+
+export default {
+  name: 'Home',
+  components: {
+    alert: Alert,
+  },
+  data() {
+    return {
+      events: [],
+      addEventForm: {
+        name: '',
+        location: '',
+        date: '',
+      },
+      editForm: {
+        name: '',
+        location: '',
+        date: '',
+      },
+      message: '',
+      showMessage: false,
+    };
+  },
+  methods: {
+    getEvents() {
+      const path = 'http://localhost:5000/api/v1/get';
+      axios
+        .get(path)
+        .then((res) => {
+          this.events = res.data;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+    addEvent(payload) {
+      const path = 'http://localhost:5000/api/v1/post';
+      axios
+        .post(path, payload)
+        .then(() => {
+          this.getEvents();
+          this.message = 'Event added!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.getEvents();
+        });
+    },
+    updateEvent(payload, eventID) {
+      const path = `http://localhost:5000/api/v1/update/${eventID}`;
+      axios
+        .put(path, payload)
+        .then(() => {
+          this.getEvents();
+          this.message = 'Event updated!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+          this.getEvents();
+        });
+    },
+    removeEvent(eventID) {
+      const path = `http://localhost:5000/api/v1/del/<id>/del/${eventID}`;
+      axios.delete(path)
+        .then(() => {
+          this.getEvents();
+          this.message = 'Event removed!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          console.error(error);
+          this.getEvents();
+        });
+    },
+    onDeleteEvent(event) {
+      this.removeEvent(event.id);
+    },
+
+    editEvent(event) {
+      this.editForm = event;
+    },
+    initForm() {
+      this.addEventForm.name = '';
+      this.addEventForm.location = '';
+      this.addEventForm.date = '';
+      this.editForm.name = '';
+      this.editForm.location = '';
+      this.editForm.date = '';
+    },
+    onSubmit(evt) {
+      evt.preventDefault();
+      this.$refs.addEventModal.hide();
+      const payload = {
+        name: this.addEventForm.name,
+        location: this.addEventForm.location,
+        date: this.addEventForm.date,
+      };
+      this.addEvent(payload);
+      this.initForm();
+    },
+    onReset(evt) {
+      evt.preventDefault();
+      this.$refs.addEventModal.hide();
+      this.initForm();
+    },
+    onSubmitUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editEventModal.hide();
+      const payload = {
+        name: this.editForm.name,
+        location: this.editForm.location,
+        date: this.editForm.date,
+      };
+      this.updateEvent(payload, this.editForm.id);
+    },
+    onUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editEventModal.hide();
+      const payload = {
+        name: this.editForm.name,
+        location: this.editForm.location,
+        date: this.editForm.date,
+      };
+      this.updateEvent(payload, this.editForm.id);
+    },
+    onResetUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editEventModal.hide();
+      this.initForm();
+      this.getEvents();
+    },
+  },
+  created() {
+    this.getEvents();
+  },
+};
+</script>
 <style scoped>
 .sidenav {
   height: 100%;
@@ -52,21 +303,27 @@
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #111;
+  background-color: #33313b;
   overflow-x: hidden;
   padding-top: 20px;
+  border-right: 2px solid #f5f5f5;
 }
 
 .sidenav a {
-  padding: 6px 8px 6px 16px;
+  padding: 16px;
   text-decoration: none;
   font-size: 25px;
   color: #818181;
   display: block;
+  text-transform: uppercase;
 }
-
 .sidenav a:hover {
   color: #f1f1f1;
+  background-color: #818181;
+  border-radius: 50px;
+}
+.links {
+  margin-top: 40px;
 }
 
 .main {
@@ -74,12 +331,12 @@
   padding: 0px 10px;
 }
 .card-outer {
-  /* Add shadows to create the "card" effect */
+  /* Add shadows to create the 'card' effect */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   transition: 0.3s;
   width: 900px;
-  height: 160px;
+  margin: 0 auto;
 }
 
 /* On mouse-over, add a deeper shadow */
@@ -90,7 +347,26 @@
   width: 100%;
   height: 60px;
 }
-.btn-rounded{
-  border-radius: 40px;
+.btn-rounded {
+  border-radius: 8px;
+  background-color: #f2b920;
+  color: #fff;
+}
+.btn {
+  border-radius: 8px;
+  color: #fff;
+}
+.center {
+  padding-bottom: 20px;
+  justify-content: space-between;
+  width: 900px;
+  margin: 0 auto;
+  padding: 15px;
+  background-color: #f0f2f5;
+}
+.centered {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  width: 900px;
+  margin: 0 auto;
 }
 </style>
