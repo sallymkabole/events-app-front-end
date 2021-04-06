@@ -110,7 +110,7 @@
             type="text"
             v-model="addEventForm.date"
             required
-            placeholder="Enter date"
+            placeholder="Enter date(timestamp only)"
           >
           </b-form-input>
         </b-form-group>
@@ -163,7 +163,7 @@
             type="text"
             v-model="editForm.date"
             required
-            placeholder="Enter date"
+            placeholder="Enter "
           >
           </b-form-input>
         </b-form-group>
