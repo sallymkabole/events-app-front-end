@@ -202,11 +202,12 @@ export default {
   },
   methods: {
     getEvents() {
-      const path = 'http://localhost:5000/api/v1/get';
+      const path = 'https://events-app-server-dev.herokuapp.com/';
       axios
         .get(path)
         .then((res) => {
           this.events = res.data;
+          console.log(this.events);
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -214,7 +215,7 @@ export default {
         });
     },
     addEvent(payload) {
-      const path = 'http://localhost:5000/api/v1/post';
+      const path = 'https://events-app-server-dev.herokuapp.com/';
       axios
         .post(path, payload)
         .then(() => {
@@ -228,7 +229,7 @@ export default {
         });
     },
     updateEvent(payload, eventID) {
-      const path = `http://localhost:5000/api/v1/update/${eventID}`;
+      const path = `https://events-app-server-dev.herokuapp.com/events/${eventID}`;
       axios
         .put(path, payload)
         .then(() => {
@@ -243,7 +244,7 @@ export default {
         });
     },
     removeEvent(eventID) {
-      const path = `http://localhost:5000/api/v1/del/<id>/del/${eventID}`;
+      const path = `https://events-app-server-dev.herokuapp.com/events/${eventID}`;
       axios.delete(path)
         .then(() => {
           this.getEvents();

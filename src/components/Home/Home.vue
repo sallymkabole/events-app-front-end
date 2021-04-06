@@ -179,7 +179,7 @@ export default {
   },
   methods: {
     getEvents() {
-      const path = 'http://localhost:5000/api/v1/get';
+      const path = 'https://events-app-server-dev.herokuapp.com/';
       axios
         .get(path)
         .then((res) => {
@@ -191,7 +191,7 @@ export default {
         });
     },
     addEvent(payload) {
-      const path = 'http://localhost:5000/api/v1/post';
+      const path = 'https://events-app-server-dev.herokuapp.com/';
       axios
         .post(path, payload)
         .then(() => {
@@ -205,7 +205,7 @@ export default {
         });
     },
     updateEvent(payload, eventID) {
-      const path = `http://localhost:5000/api/v1/update/${eventID}`;
+      const path = `https://events-app-server-dev.herokuapp.com/${eventID}`;
       axios
         .put(path, payload)
         .then(() => {
@@ -220,7 +220,7 @@ export default {
         });
     },
     removeEvent(eventID) {
-      const path = `http://localhost:5000/api/v1/del/<id>/del/${eventID}`;
+      const path = `https://events-app-server-dev.herokuapp.com/<id>/del/${eventID}`;
       axios.delete(path)
         .then(() => {
           this.getEvents();
